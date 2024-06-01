@@ -97,6 +97,12 @@ public class PlayerMovement: MonoBehaviour
 		LastPressedDashTime -= Time.deltaTime;
 		#endregion
 
+        Animator.SetBool("IsDashing", IsDashing);
+        Animator.SetBool("IsJumping", IsJumping);
+        Animator.SetBool("IsSliding", IsSliding);
+        Animator.SetBool("IsWallJumping", IsWallJumping);
+        Animator.SetBool("IsFalling", !IsJumping && !IsSliding && RB.velocity.y < 0);
+
 		#region INPUT HANDLER
 		_moveInput.x = Input.GetAxisRaw("Horizontal");
 		_moveInput.y = Input.GetAxisRaw("Vertical");
@@ -175,7 +181,6 @@ public class PlayerMovement: MonoBehaviour
 				IsWallJumping = false;
 				_isJumpCut = false;
 				_isJumpFalling = false;
-                Animator.SetBool("IsJumping", true);
 				Jump();
 			}
 			//WALL JUMP
@@ -210,16 +215,22 @@ public class PlayerMovement: MonoBehaviour
 			IsJumping = false;
 			IsWallJumping = false;
 			_isJumpCut = false;
-            Animator.SetBool("IsDashing", true);
 			StartCoroutine(nameof(StartDash), _lastDashDir);
 		}
 		#endregion
 
 		#region SLIDE CHECKS
-		if (CanSlide() && ((LastOnWallLeftTime > 0 && _moveInput.x < 0) || (LastOnWallRightTime > 0 && _moveInput.x > 0)))
+		if (CanSlide() && ((LastOnWallLeftTime > 0 && _moveInput.x < 0) || (LastOnWallRightTime > 0 && _moveInput.x > 0))){
 			IsSliding = true;
+            IsJumping = false;
+            _moveInput.x = 0;
+            Animator.SetBool("IsRunning", false);
+            Animator.SetBool("IsFalling", false);
+        }
 		else
+        {
 			IsSliding = false;
+        }
 		#endregion
 
 		#region GRAVITY
@@ -545,7 +556,6 @@ public class PlayerMovement: MonoBehaviour
 		if (!IsDashing && _dashesLeft < Data.dashAmount && LastOnGroundTime > 0 && !_dashRefilling)
 		{
 			StartCoroutine(nameof(RefillDash), 1);
-            Animator.SetBool("IsDashing", false);
 		}
 
 		return _dashesLeft > 0;
