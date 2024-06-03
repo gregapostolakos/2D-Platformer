@@ -31,6 +31,8 @@ public class PlayerMovement: MonoBehaviour
 	public bool IsDashing { get; private set; }
 	public bool IsSliding { get; private set; }
 
+	public bool IsRunning { get; private set; }
+
 	//Timers (also all fields, could be private and a method returning a bool could be used)
 	public float LastOnGroundTime { get; private set; }
 	public float LastOnWallTime { get; private set; }
@@ -94,9 +96,7 @@ public class PlayerMovement: MonoBehaviour
 	private void Update()
 	{
 
-        if (PlayerCombat.isAttacking){
-            _moveInput.x = 0;
-        }
+
 
         #region TIMERS
         LastOnGroundTime -= Time.deltaTime;
@@ -108,17 +108,26 @@ public class PlayerMovement: MonoBehaviour
 		LastPressedDashTime -= Time.deltaTime;
 		#endregion
 
+		Animator.SetBool("IsRunning", IsRunning);
         Animator.SetBool("IsDashing", IsDashing);
         Animator.SetBool("IsJumping", IsJumping);
         Animator.SetBool("IsDoubleJumping", IsDoubleJumping);
         Animator.SetBool("IsSliding", IsSliding);
         Animator.SetBool("IsWallJumping", IsWallJumping);
-        Animator.SetBool("IsFalling", _isJumpFalling);
+        Animator.SetBool("IsFalling", !IsJumping && !IsSliding && RB.velocity.y < 0);
 		IsFalling = _isJumpFalling;
 
 		#region INPUT HANDLER
-		_moveInput.x = Input.GetAxisRaw("Horizontal");
-		_moveInput.y = Input.GetAxisRaw("Vertical");
+
+		if (PlayerCombat.isAttacking){
+            _moveInput.x = 0;
+        } else {
+			_moveInput.x = Input.GetAxisRaw("Horizontal");
+			_moveInput.y = Input.GetAxisRaw("Vertical");
+		}
+
+
+		Debug.Log(_moveInput.x);
 
 		if (_moveInput.x != 0)
 			CheckDirectionToFace(_moveInput.x > 0);
@@ -239,8 +248,6 @@ public class PlayerMovement: MonoBehaviour
 			IsSliding = true;
             IsJumping = false;
             _moveInput.x = 0;
-            Animator.SetBool("IsRunning", false);
-            Animator.SetBool("IsFalling", _isJumpFalling);
         }
 		else
         {
@@ -296,9 +303,6 @@ public class PlayerMovement: MonoBehaviour
 
     private void FixedUpdate()
 	{   
-        if (PlayerCombat.isAttacking){
-            _moveInput.x = 0;
-        }
 		//Handle Run
 		if (!IsDashing)
 		{
@@ -412,7 +416,7 @@ public class PlayerMovement: MonoBehaviour
 		 * Time.fixedDeltaTime is by default in Unity 0.02 seconds equal to 50 FixedUpdate() calls per second
 		*/
 
-		Animator.SetBool("IsRunning", Mathf.Abs(targetSpeed) > 0.01f);
+		IsRunning = Mathf.Abs(targetSpeed) > 0.01f;
 	}
 
 	private void Turn()
@@ -553,12 +557,12 @@ public class PlayerMovement: MonoBehaviour
 	{
 		if (isMovingRight != IsFacingRight)
 			Turn();
-		Animator.SetBool("IsRunning", Mathf.Abs(_moveInput.x) > 0.01f);
+		//Animator.SetBool("IsRunning", Mathf.Abs(_moveInput.x) > 0.01f);
 	}
 
     private bool CanJump()
     {
-		return (LastOnGroundTime > 0 || jumpCount < 2) && !IsJumping;
+		return (LastOnGroundTime > 0 || jumpCount < 2) && !IsJumping && !PlayerCombat.isAttacking;
     }
 
 	private bool CanWallJump()

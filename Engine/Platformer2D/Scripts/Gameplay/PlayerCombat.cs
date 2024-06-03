@@ -82,7 +82,7 @@ public class PlayerCombat : MonoBehaviour
             }
 
             // Start a coroutine to reset isAttacking when the animation finishes
-            StartCoroutine(ResetAttackState(Animator.GetCurrentAnimatorStateInfo(0).length));
+            StartCoroutine(ResetAttackState(0.6f));
         }  
     }
 
@@ -102,7 +102,7 @@ public class PlayerCombat : MonoBehaviour
             }
 
             // Start a coroutine to reset isAttacking when the animation finishes
-            StartCoroutine(ResetAttackState(Animator.GetCurrentAnimatorStateInfo(0).length));
+            StartCoroutine(ResetAttackState(0.8f));
         } 
     }
 
@@ -114,7 +114,7 @@ public class PlayerCombat : MonoBehaviour
 
             Animator.SetBool("SwordGuard", true);
 
-            StartCoroutine(ResetAttackState(Animator.GetCurrentAnimatorStateInfo(0).length));
+            StartCoroutine(ResetAttackState(0.6f));
 
         } 
     }
@@ -135,7 +135,7 @@ public class PlayerCombat : MonoBehaviour
             }
 
             // Start a coroutine to reset isAttacking when the animation finishes
-            StartCoroutine(ResetAttackState(Animator.GetCurrentAnimatorStateInfo(0).length));
+            StartCoroutine(ResetAttackState(0.6f));
         } 
     }
 
@@ -155,7 +155,7 @@ public class PlayerCombat : MonoBehaviour
             }
 
             // Start a coroutine to reset isAttacking when the animation finishes
-            StartCoroutine(ResetAttackState(Animator.GetCurrentAnimatorStateInfo(0).length));
+            StartCoroutine(ResetAttackState(0.8f));
         } 
     }
 

@@ -629,7 +629,7 @@ MonoBehaviour:
   dashEndTime: 0
   dashEndSpeed: {x: 0, y: 0}
   dashEndRunLerp: 0
-  dashRefillTime: 0.8
+  dashRefillTime: 1.5
   dashInputBufferTime: 0.1
 --- !u!4 &1098278983 stripped
 Transform:
@@ -1396,6 +1396,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: RedWerevolf
+      objectReference: {fileID: 0}
+    - target: {fileID: 7860622597078178051, guid: 654d0591a60a4576ba603187d1dc6f9f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7860622597078178052, guid: 654d0591a60a4576ba603187d1dc6f9f,
         type: 3}
@@ -9584,7 +9589,7 @@ TilemapCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2004517539}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 6200000, guid: 9aeb4d978e8157a479a337bc2652925d, type: 2}
   m_IsTrigger: 0
