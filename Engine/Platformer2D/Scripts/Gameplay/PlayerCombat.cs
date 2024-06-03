@@ -34,15 +34,17 @@ public class PlayerCombat : MonoBehaviour
             GroundSlam();
         }
 
+        //SWORD GUARD
+
+        // if(Input.GetKeyDown(KeyCode.Q) && CanAttack()){
+        //     SwordGuard();
+        // }
+
+        // if(Input.GetKeyUp(KeyCode.Q)){
+        //     Animator.SetBool("SwordGuard", false);
+        // }
+
         if(Input.GetKeyDown(KeyCode.Q) && CanAttack()){
-            SwordGuard();
-        }
-
-        if(Input.GetKeyUp(KeyCode.Q)){
-            Animator.SetBool("SwordGuard", false);
-        }
-
-        if(Input.GetKeyDown(KeyCode.R) && CanAttack()){
             StrongAttack();
         }
 
