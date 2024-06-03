@@ -15,6 +15,8 @@ public class PlayerMovement: MonoBehaviour
 	#region COMPONENTS
     public Rigidbody2D RB { get; private set; }
 	public Animator Animator { get; private set; } 
+    public PlayerCombat PlayerCombat { get; private set; }  
+
 	#endregion
 
 	#region STATE PARAMETERS
@@ -23,6 +25,8 @@ public class PlayerMovement: MonoBehaviour
 	//but can only be privately written to.
 	public bool IsFacingRight { get; private set; }
 	public bool IsJumping { get; private set; }
+    public bool IsDoubleJumping { get; private set; }
+	public bool IsFalling { get; private set; }
 	public bool IsWallJumping { get; private set; }
 	public bool IsDashing { get; private set; }
 	public bool IsSliding { get; private set; }
@@ -36,6 +40,7 @@ public class PlayerMovement: MonoBehaviour
 	//Jump
 	private bool _isJumpCut;
 	private bool _isJumpFalling;
+    public int jumpCount;
 
 	//Wall Jump
 	private float _wallJumpStartTime;
@@ -77,6 +82,7 @@ public class PlayerMovement: MonoBehaviour
 	{
 		RB = GetComponent<Rigidbody2D>();
 		Animator = GetComponent<Animator>(); 
+        PlayerCombat = GetComponent<PlayerCombat>(); 
 	}
 
 	private void Start()
@@ -87,6 +93,11 @@ public class PlayerMovement: MonoBehaviour
 
 	private void Update()
 	{
+
+        if (PlayerCombat.isAttacking){
+            _moveInput.x = 0;
+        }
+
         #region TIMERS
         LastOnGroundTime -= Time.deltaTime;
 		LastOnWallTime -= Time.deltaTime;
@@ -99,9 +110,11 @@ public class PlayerMovement: MonoBehaviour
 
         Animator.SetBool("IsDashing", IsDashing);
         Animator.SetBool("IsJumping", IsJumping);
+        Animator.SetBool("IsDoubleJumping", IsDoubleJumping);
         Animator.SetBool("IsSliding", IsSliding);
         Animator.SetBool("IsWallJumping", IsWallJumping);
-        Animator.SetBool("IsFalling", !IsJumping && !IsSliding && RB.velocity.y < 0);
+        Animator.SetBool("IsFalling", _isJumpFalling);
+		IsFalling = _isJumpFalling;
 
 		#region INPUT HANDLER
 		_moveInput.x = Input.GetAxisRaw("Horizontal");
@@ -133,6 +146,8 @@ public class PlayerMovement: MonoBehaviour
 			if (Physics2D.OverlapBox(_groundCheckPoint.position, _groundCheckSize, 0, _groundLayer) && !IsJumping) //checks if set box overlaps with ground
 			{
 				LastOnGroundTime = Data.coyoteTime; //if so sets the lastGrounded to coyoteTime
+                jumpCount = 0; // Reset jump count when grounded
+                IsDoubleJumping = false;
             }		
 
 			//Right Wall Check
@@ -200,7 +215,7 @@ public class PlayerMovement: MonoBehaviour
 		#endregion
 
 		#region DASH CHECKS
-		if (CanDash() && LastPressedDashTime > 0)
+		if (CanDash() && LastPressedDashTime > 0 && !PlayerCombat.isAttacking )
 		{
 			//Freeze game for split second. Adds juiciness and a bit of forgiveness over directional input
 			Sleep(Data.dashSleepTime); 
@@ -220,12 +235,12 @@ public class PlayerMovement: MonoBehaviour
 		#endregion
 
 		#region SLIDE CHECKS
-		if (CanSlide() && ((LastOnWallLeftTime > 0 && _moveInput.x < 0) || (LastOnWallRightTime > 0 && _moveInput.x > 0))){
+		if (CanSlide() && ((LastOnWallLeftTime >= 0 && _moveInput.x < 0) || (LastOnWallRightTime >= 0 && _moveInput.x > 0))){
 			IsSliding = true;
             IsJumping = false;
             _moveInput.x = 0;
             Animator.SetBool("IsRunning", false);
-            Animator.SetBool("IsFalling", false);
+            Animator.SetBool("IsFalling", _isJumpFalling);
         }
 		else
         {
@@ -280,7 +295,10 @@ public class PlayerMovement: MonoBehaviour
     }
 
     private void FixedUpdate()
-	{
+	{   
+        if (PlayerCombat.isAttacking){
+            _moveInput.x = 0;
+        }
 		//Handle Run
 		if (!IsDashing)
 		{
@@ -343,7 +361,7 @@ public class PlayerMovement: MonoBehaviour
 	//MOVEMENT METHODS
     #region RUN METHODS
     private void Run(float lerpAmount)
-	{
+	{   
 		//Calculate the direction we want to move in and our desired velocity
 		float targetSpeed = _moveInput.x * Data.runMaxSpeed;
 		//We can reduce are control using Lerp() this smooths changes to are direction and speed
@@ -399,12 +417,14 @@ public class PlayerMovement: MonoBehaviour
 
 	private void Turn()
 	{
-		//stores scale and flips the player along the x axis, 
-		Vector3 scale = transform.localScale; 
-		scale.x *= -1;
-		transform.localScale = scale;
+        if (!PlayerCombat.isAttacking && !IsDashing){
+            //stores scale and flips the player along the x axis, 
+            Vector3 scale = transform.localScale; 
+            scale.x *= -1;
+            transform.localScale = scale;
 
-		IsFacingRight = !IsFacingRight;
+            IsFacingRight = !IsFacingRight;
+        }
 	}
     #endregion
 
@@ -414,6 +434,12 @@ public class PlayerMovement: MonoBehaviour
 		//Ensures we can't call Jump multiple times from one press
 		LastPressedJumpTime = 0;
 		LastOnGroundTime = 0;
+
+        jumpCount++; // Increment jump count
+
+        if (jumpCount == 2) { 
+            IsDoubleJumping = true;
+        }
 
 		#region Perform Jump
 		//We increase the force applied if we are falling
@@ -532,7 +558,7 @@ public class PlayerMovement: MonoBehaviour
 
     private bool CanJump()
     {
-		return LastOnGroundTime > 0 && !IsJumping;
+		return (LastOnGroundTime > 0 || jumpCount < 2) && !IsJumping;
     }
 
 	private bool CanWallJump()
