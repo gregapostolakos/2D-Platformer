@@ -563,8 +563,9 @@ public class PlayerMovement: MonoBehaviour
 
 	private bool CanWallJump()
     {
-		return LastPressedJumpTime > 0 && LastOnWallTime > 0 && LastOnGroundTime <= 0 && (!IsWallJumping ||
-			 (LastOnWallRightTime > 0 && _lastWallJumpDir == 1) || (LastOnWallLeftTime > 0 && _lastWallJumpDir == -1));
+		// return LastPressedJumpTime > 0 && LastOnWallTime > 0 && LastOnGroundTime <= 0 && (!IsWallJumping ||
+		// 	 (LastOnWallRightTime > 0 && _lastWallJumpDir == 1) || (LastOnWallLeftTime > 0 && _lastWallJumpDir == -1));
+		return false;
 	}
 
 	private bool CanJumpCut()
@@ -589,9 +590,9 @@ public class PlayerMovement: MonoBehaviour
 
 	public bool CanSlide()
     {
-		if (LastOnWallTime > 0 && !IsJumping && !IsWallJumping && !IsDashing && LastOnGroundTime <= 0)
-			return true;
-		else
+		// if (LastOnWallTime > 0 && !IsJumping && !IsWallJumping && !IsDashing && LastOnGroundTime <= 0)
+		// 	return true;
+		// else
 			return false;
 	}
     #endregion
