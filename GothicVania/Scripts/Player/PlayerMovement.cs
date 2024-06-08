@@ -10,7 +10,7 @@ public class PlayerMovement: MonoBehaviour
 	//just paste in all the parameters, though you will need to manuly change all references in this script
 
 	
-	public PlayerData Data;
+	public PlayerMovementData Data;
 
 	#region COMPONENTS
     public Rigidbody2D RB { get; private set; }
@@ -30,7 +30,6 @@ public class PlayerMovement: MonoBehaviour
 	public bool IsWallJumping { get; private set; }
 	public bool IsDashing { get; private set; }
 	public bool IsSliding { get; private set; }
-
 	public bool IsRunning { get; private set; }
 
 	//Timers (also all fields, could be private and a method returning a bool could be used)
@@ -42,7 +41,7 @@ public class PlayerMovement: MonoBehaviour
 	//Jump
 	private bool _isJumpCut;
 	private bool _isJumpFalling;
-    public int jumpCount;
+    int jumpCount;
 
 	//Wall Jump
 	private float _wallJumpStartTime;
@@ -95,9 +94,6 @@ public class PlayerMovement: MonoBehaviour
 
 	private void Update()
 	{
-
-
-
         #region TIMERS
         LastOnGroundTime -= Time.deltaTime;
 		LastOnWallTime -= Time.deltaTime;
@@ -119,15 +115,14 @@ public class PlayerMovement: MonoBehaviour
 
 		#region INPUT HANDLER
 
+		//If player is attacking dont get movement inputs to initialise a freeze in x axis 
+
 		if (PlayerCombat.isAttacking){
             _moveInput.x = 0;
         } else {
 			_moveInput.x = Input.GetAxisRaw("Horizontal");
 			_moveInput.y = Input.GetAxisRaw("Vertical");
 		}
-
-
-		Debug.Log(_moveInput.x);
 
 		if (_moveInput.x != 0)
 			CheckDirectionToFace(_moveInput.x > 0);
