@@ -344,6 +344,10 @@ PrefabInstance:
       propertyPath: HealthBar
       value: 
       objectReference: {fileID: 1105494033}
+    - target: {fileID: 1101150905, guid: 528372508fa4bdc47a8f107a9908cc5a, type: 3}
+      propertyPath: isAttacking
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1262357808126890, guid: 528372508fa4bdc47a8f107a9908cc5a, type: 3}
       propertyPath: m_Name
       value: PlayerMain
@@ -394,8 +398,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 131380839749560609, guid: 528372508fa4bdc47a8f107a9908cc5a,
         type: 3}
+      propertyPath: groundSlamCost
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 131380839749560609, guid: 528372508fa4bdc47a8f107a9908cc5a,
+        type: 3}
       propertyPath: groundSlamRange
-      value: 5
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 131380839749560609, guid: 528372508fa4bdc47a8f107a9908cc5a,
+        type: 3}
+      propertyPath: strongAttackCost
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 131380839749560609, guid: 528372508fa4bdc47a8f107a9908cc5a,
+        type: 3}
+      propertyPath: strongAttackRange
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 131380839749560609, guid: 528372508fa4bdc47a8f107a9908cc5a,
+        type: 3}
+      propertyPath: normalAttackUnlocked
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 651005707920891723, guid: 528372508fa4bdc47a8f107a9908cc5a,
         type: 3}
@@ -415,12 +439,22 @@ PrefabInstance:
     - target: {fileID: 1565624926382794482, guid: 528372508fa4bdc47a8f107a9908cc5a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.07
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1565624926382794482, guid: 528372508fa4bdc47a8f107a9908cc5a,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.09
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6396490475248050726, guid: 528372508fa4bdc47a8f107a9908cc5a,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.87
+      objectReference: {fileID: 0}
+    - target: {fileID: 6396490475248050726, guid: 528372508fa4bdc47a8f107a9908cc5a,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.83
       objectReference: {fileID: 0}
     - target: {fileID: 8909298576941027631, guid: 528372508fa4bdc47a8f107a9908cc5a,
         type: 3}
@@ -454,7 +488,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 226975419}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -4.41, z: 0}
+  m_LocalPosition: {x: 0, y: -4.36, z: 0}
   m_LocalScale: {x: 100, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -738,7 +772,7 @@ GameObject:
   - component: {fileID: 1125516253}
   - component: {fileID: 1125516252}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -906,7 +940,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1188380021}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 8.27, y: -3.85, z: -4.8328304}
+  m_LocalPosition: {x: 8.27, y: -1.75, z: -4.8328304}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1390,7 +1424,7 @@ PrefabInstance:
     - target: {fileID: 7711452897420580419, guid: 51ac6eafb84c8c241bbadd7f2509c6cb,
         type: 3}
       propertyPath: levelTop
-      value: 4.9
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7711452897420580419, guid: 51ac6eafb84c8c241bbadd7f2509c6cb,
         type: 3}
@@ -1410,7 +1444,7 @@ PrefabInstance:
     - target: {fileID: 7711452897420580419, guid: 51ac6eafb84c8c241bbadd7f2509c6cb,
         type: 3}
       propertyPath: levelBottom
-      value: -4.9
+      value: -4.8
       objectReference: {fileID: 0}
     - target: {fileID: 7711452897420580419, guid: 51ac6eafb84c8c241bbadd7f2509c6cb,
         type: 3}

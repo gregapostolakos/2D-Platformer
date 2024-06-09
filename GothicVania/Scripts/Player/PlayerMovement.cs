@@ -594,6 +594,11 @@ public class PlayerMovement: MonoBehaviour
 		// else
 			return false;
 	}
+
+	public bool MovementSkillInertia()
+	{
+		return(!IsJumping && !IsDoubleJumping && !IsDashing && !IsFalling);
+	}
     #endregion
 
 

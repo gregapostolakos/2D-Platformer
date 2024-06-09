@@ -49,19 +49,19 @@ public class PlayerCombat : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Mouse0) && CanAttack()){
+        if(Input.GetKeyDown(KeyCode.Mouse0) && IsCombatSkillUnlocked(CombatData.normalAttackUnlocked) && CanAttack()){
             NormalAttack();
         }
 
-        if(Input.GetKeyDown(KeyCode.Q) && CanAttack() && ManaBar.HasMana(CombatData.strongAttackCost)){
+        if(Input.GetKeyDown(KeyCode.Q) && IsCombatSkillUnlocked(CombatData.strongAttackUnlocked) && CanAttack() && ManaBar.HasMana(CombatData.strongAttackCost)){
             StrongAttack();
         }
 
-        if(Input.GetKeyDown(KeyCode.E) && CanAttack() && ManaBar.HasMana(CombatData.groundSlamCost)){
+        if(Input.GetKeyDown(KeyCode.E) && IsCombatSkillUnlocked(CombatData.groundSlamUnlocked) && CanAttack() && ManaBar.HasMana(CombatData.groundSlamCost)){
             GroundSlam();
         }
 
-        if(Input.GetKeyDown(KeyCode.Mouse2) && CanAttack() && ManaBar.HasMana(CombatData.rangeAttackCost)){
+        if(Input.GetKeyDown(KeyCode.Mouse2) && IsCombatSkillUnlocked(CombatData.rangeAttackUnlocked) && CanAttack() && ManaBar.HasMana(CombatData.rangeAttackCost)){
             RangeAttack();
         }
 
@@ -74,12 +74,17 @@ public class PlayerCombat : MonoBehaviour
 
     public bool CanAttack()
     {
-        return (!PlayerMovement.IsJumping && !PlayerMovement.IsDoubleJumping && !PlayerMovement.IsDashing && !PlayerMovement.IsFalling && !AttackOnCooldown());
+        return (PlayerMovement.MovementSkillInertia() && !AttackOnCooldown());
     }
 
     public bool AttackOnCooldown()
     {
        return (Time.time - lastAttackTime < CombatData.attackCooldown);
+    }
+
+    public bool IsCombatSkillUnlocked(bool unlocked)
+    {
+       return (unlocked);
     }
 
     void NormalAttack() 
@@ -179,19 +184,23 @@ public class PlayerCombat : MonoBehaviour
 
     void OnDrawGizmosSelected() 
     {
-        if(normalAttackPoint == null){
+        if(normalAttackPoint != null){
+            Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(normalAttackPoint.position, CombatData.normalAttackRange);
         }
 
-        if(strongAttackPoint == null){
+        if(strongAttackPoint != null){
+            Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(strongAttackPoint.position, CombatData.strongAttackRange);
         }
 
-        if(groundSlamPoint == null){
+        if(groundSlamPoint != null){
+            Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(groundSlamPoint.position, CombatData.groundSlamRange);
         }
 
-        if(rangeAttackPoint == null){
+        if(rangeAttackPoint != null){
+            Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(rangeAttackPoint.position, CombatData.rangeAttackRange);
         }
     }

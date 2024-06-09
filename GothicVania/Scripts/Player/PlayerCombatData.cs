@@ -16,11 +16,20 @@ public class PlayerCombatData : MonoBehaviour
     [Space(20)]
 
 
+    [Header("Skills Unlocked")]
+	[Space(10)]
+    public bool normalAttackUnlocked = true;
+    public bool strongAttackUnlocked = true;
+    public bool groundSlamUnlocked = true;
+    public bool rangeAttackUnlocked = true;
+    [Space(20)]
+
+
     [Header("Skills Damage")]
 	[Space(10)]
     public int normalAttackDamage = 10;
-    public int groundSlamDamage = 40;
     public int strongAttackDamage = 30;
+    public int groundSlamDamage = 40;
     public int rangeAttackDamage = 20;
     [Space(20)]
 
@@ -28,8 +37,8 @@ public class PlayerCombatData : MonoBehaviour
     [Header("Skills Mana Cost")]
 	[Space(10)]
     public int normalAttackCost = 10;
-    public int groundSlamCost = 40;
     public int strongAttackCost = 30;
+    public int groundSlamCost = 40;
     public int rangeAttackCost = 20;
     [Space(20)]
 
@@ -37,9 +46,9 @@ public class PlayerCombatData : MonoBehaviour
     [Header("Skills Damage Range")]
 	[Space(10)]
     public float normalAttackRange = 0.5f;
-    public float rangeAttackRange = 0.5f;
-    public float groundSlamRange = 0.5f;
     public float strongAttackRange = 0.5f;
+    public float groundSlamRange = 0.5f;
+    public float rangeAttackRange = 0.5f;
     [Space(20)]
 
 
