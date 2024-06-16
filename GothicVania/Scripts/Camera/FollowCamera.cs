@@ -21,7 +21,7 @@ public class FollowCamera : MonoBehaviour
     public float intensity = 0.1f;
     public float duration = 0.1f;
     
-    private Camera camera;
+    private Camera cam;
     private Vector3 currentPosition;
     private GameObject lockTarget = null;
 
@@ -30,7 +30,7 @@ public class FollowCamera : MonoBehaviour
     void Awake()
     {
         _instance = this;
-        camera = GetComponent<Camera>();
+        cam = GetComponent<Camera>();
     }
 
     void Start()
@@ -78,15 +78,15 @@ public class FollowCamera : MonoBehaviour
 
     public float GetFrustrumHeight()
     {
-        if (camera.orthographic)
-            return 2f * camera.orthographicSize;
+        if (cam.orthographic)
+            return 2f * cam.orthographicSize;
         else
-            return 2.0f * Mathf.Abs(transform.position.z) * Mathf.Tan(camera.fieldOfView * 0.5f * Mathf.Deg2Rad);
+            return 2.0f * Mathf.Abs(transform.position.z) * Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
     }
 
     public float GetFrustrumWidth()
     {
-        return GetFrustrumHeight() * camera.aspect;
+        return GetFrustrumHeight() * cam.aspect;
     }
 
     public void LockCameraOn(GameObject ltarget)
@@ -143,7 +143,7 @@ public class FollowCamera : MonoBehaviour
     public static Camera GetCamera()
     {
         if (_instance)
-            return _instance.camera;
+            return _instance.cam;
         return null;
     }
 }

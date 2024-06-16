@@ -222,6 +222,7 @@ GameObject:
   - component: {fileID: 3898074070976289799}
   - component: {fileID: 1101150899}
   - component: {fileID: 1101150905}
+  - component: {fileID: 1101150907}
   m_Layer: 0
   m_Name: PlayerMain
   m_TagString: Player
@@ -307,9 +308,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1262357808126890}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 6fa450d8c7dd70b4fb3c1f68cbd43c2a, type: 2}
+  m_Controller: {fileID: 9100000, guid: d111b672e57c97e49b207db4467e9680, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -380,7 +381,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Data: {fileID: 1020926495}
-  jumpCount: 0
+  _moveInput: {x: 0, y: 0}
   _groundCheckPoint: {fileID: 182654771}
   _groundCheckSize: {x: 0.2, y: 0.01}
   _frontWallCheckPoint: {fileID: 1514459491}
@@ -405,18 +406,28 @@ MonoBehaviour:
   HealthBar: {fileID: 0}
   ManaBar: {fileID: 0}
   Camera: {fileID: 0}
+  normalAttackPoint: {fileID: 1801950215}
+  strongAttackPoint: {fileID: 6396490475248050726}
+  groundSlamPoint: {fileID: 1565624926382794482}
+  rangeAttackPoint: {fileID: 5957881533986481569}
+  isAttacking: 0
   enemyLayers:
     serializedVersion: 2
     m_Bits: 128
-  isAttacking: 0
-  normalAttackPoint: {fileID: 1801950215}
-  rangeAttackPoint: {fileID: 5957881533986481569}
-  groundSlamPoint: {fileID: 1565624926382794482}
-  strongAttackPoint: {fileID: 6396490475248050726}
-  normalAttackRange: 0.5
-  rangeAttackRange: 0.5
-  groundSlamRange: 0.5
-  strongAttackRange: 0.5
+--- !u!114 &1101150907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1262357808126890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f548020391651d4a9c855a1afe3aec7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Movement: {fileID: 1101150899}
+  Combat: {fileID: 1101150905}
 --- !u!1 &651005707920891723
 GameObject:
   m_ObjectHideFlags: 0
@@ -428,10 +439,10 @@ GameObject:
   - component: {fileID: 6396490475248050726}
   m_Layer: 0
   m_Name: strongAttackPoint
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &6396490475248050726
 Transform:
@@ -441,7 +452,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 651005707920891723}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.87, y: 0.83, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -462,7 +473,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &5957881533986481569
 Transform:
@@ -630,14 +641,24 @@ MonoBehaviour:
   maxMana: 80
   currentMana: 20
   isAlive: 1
+  normalAttackUnlocked: 1
+  strongAttackUnlocked: 1
+  groundSlamUnlocked: 1
+  rangeAttackUnlocked: 1
   normalAttackDamage: 10
-  groundSlamDamage: 40
   strongAttackDamage: 30
+  groundSlamDamage: 40
   rangeAttackDamage: 20
   normalAttackCost: 10
-  groundSlamCost: 40
   strongAttackCost: 30
+  groundSlamCost: 40
   rangeAttackCost: 20
+  normalAttackRange: 0.5
+  strongAttackRange: 1
+  groundSlamRange: 2
+  rangeAttackRange: 0.5
+  normalAttackCounter: 0
+  attackCooldown: 1
 --- !u!1 &8909298576941027631
 GameObject:
   m_ObjectHideFlags: 0
@@ -652,7 +673,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &1565624926382794482
 Transform:

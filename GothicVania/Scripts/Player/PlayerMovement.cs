@@ -14,7 +14,6 @@ public class PlayerMovement: MonoBehaviour
 
 	#region COMPONENTS
     public Rigidbody2D RB { get; private set; }
-	public Animator Animator { get; private set; } 
     public PlayerCombat PlayerCombat { get; private set; }  
 
 	#endregion
@@ -56,7 +55,7 @@ public class PlayerMovement: MonoBehaviour
 	#endregion
 
 	#region INPUT PARAMETERS
-	private Vector2 _moveInput;
+	public Vector2 _moveInput;
 
 	public float LastPressedJumpTime { get; private set; }
 	public float LastPressedDashTime { get; private set; }
@@ -82,7 +81,6 @@ public class PlayerMovement: MonoBehaviour
     private void Awake()
 	{
 		RB = GetComponent<Rigidbody2D>();
-		Animator = GetComponent<Animator>(); 
         PlayerCombat = GetComponent<PlayerCombat>(); 
 	}
 
@@ -104,20 +102,13 @@ public class PlayerMovement: MonoBehaviour
 		LastPressedDashTime -= Time.deltaTime;
 		#endregion
 
-		Animator.SetBool("IsRunning", IsRunning);
-        Animator.SetBool("IsDashing", IsDashing);
-        Animator.SetBool("IsJumping", IsJumping);
-        Animator.SetBool("IsDoubleJumping", IsDoubleJumping);
-        Animator.SetBool("IsSliding", IsSliding);
-        Animator.SetBool("IsWallJumping", IsWallJumping);
-        Animator.SetBool("IsFalling", !IsJumping && !IsSliding && RB.velocity.y < 0);
-		IsFalling = _isJumpFalling;
+		IsFalling = !IsDashing && !IsJumping && !IsWallJumping && RB.velocity.y < 0;
 
 		#region INPUT HANDLER
 
 		//If player is attacking dont get movement inputs to initialise a freeze in x axis 
 
-		if (PlayerCombat.isAttacking){
+		if (PlayerCombat.IsAttacking()){
             _moveInput.x = 0;
         } else {
 			_moveInput.x = Input.GetAxisRaw("Horizontal");
@@ -219,7 +210,7 @@ public class PlayerMovement: MonoBehaviour
 		#endregion
 
 		#region DASH CHECKS
-		if (CanDash() && LastPressedDashTime > 0 && !PlayerCombat.isAttacking )
+		if (CanDash() && LastPressedDashTime > 0 && !PlayerCombat.IsAttacking() )
 		{
 			//Freeze game for split second. Adds juiciness and a bit of forgiveness over directional input
 			Sleep(Data.dashSleepTime); 
@@ -416,7 +407,7 @@ public class PlayerMovement: MonoBehaviour
 
 	private void Turn()
 	{
-        if (!PlayerCombat.isAttacking && !IsDashing){
+        if (!PlayerCombat.IsAttacking() && !IsDashing){
             //stores scale and flips the player along the x axis, 
             Vector3 scale = transform.localScale; 
             scale.x *= -1;
@@ -518,6 +509,7 @@ public class PlayerMovement: MonoBehaviour
 
 		//Dash over
 		IsDashing = false;
+		IsFalling = RB.velocity.y < 0;
 	}
 
 	//Short period before the player is able to dash again
@@ -552,12 +544,11 @@ public class PlayerMovement: MonoBehaviour
 	{
 		if (isMovingRight != IsFacingRight)
 			Turn();
-		//Animator.SetBool("IsRunning", Mathf.Abs(_moveInput.x) > 0.01f);
 	}
 
     private bool CanJump()
     {
-		return (LastOnGroundTime > 0 || jumpCount < 2) && !IsJumping && !PlayerCombat.isAttacking;
+		return (LastOnGroundTime > 0 || jumpCount < 2) && !IsJumping && !PlayerCombat.IsAttacking();
     }
 
 	private bool CanWallJump()

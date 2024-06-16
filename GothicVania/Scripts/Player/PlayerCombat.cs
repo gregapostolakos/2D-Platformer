@@ -8,7 +8,7 @@ public class PlayerCombat : MonoBehaviour
     [Header("Components")]
 	[Space(5)]
     public PlayerCombatData CombatData;
-    public Animator Animator { get; private set; } 
+    public Animator Animator;
     public PlayerMovement PlayerMovement { get; private set; }
     public Health HealthBar;
     public Mana ManaBar;
@@ -27,7 +27,10 @@ public class PlayerCombat : MonoBehaviour
 
     [Header("Attack Statement")]
 	[Space(5)]
-    public bool isAttacking;
+    public bool isNormalAttacking;
+    public bool isStrongAttacking;
+    public bool isGroundSlamAttacking;
+    public bool isRangeAttacking;
     [Space(10)]
 
 
@@ -42,8 +45,8 @@ public class PlayerCombat : MonoBehaviour
 
     private void Awake()
 	{
-		Animator = GetComponent<Animator>(); 
         PlayerMovement = GetComponent<PlayerMovement>();
+        Animator = GetComponent<Animator>();
 	}
 
     // Update is called once per frame
@@ -69,12 +72,18 @@ public class PlayerCombat : MonoBehaviour
             HealthBar.TakeDamage(20);
         }
 
+        IsAttacking();
         HealthBar.Die();
     }
 
     public bool CanAttack()
     {
         return (PlayerMovement.MovementSkillInertia() && !AttackOnCooldown());
+    }
+
+    public bool IsAttacking()
+    {
+        return (isNormalAttacking || isStrongAttacking || isGroundSlamAttacking || isRangeAttacking);
     }
 
     public bool AttackOnCooldown()
@@ -92,16 +101,7 @@ public class PlayerCombat : MonoBehaviour
         lastAttackTime = Time.time;
         CombatData.normalAttackCounter++;
 
-        isAttacking = true;
-
-        if (CombatData.normalAttackCounter == 1){
-            Animator.SetTrigger("Attack01");
-        } else if(CombatData.normalAttackCounter == 2) {
-            Animator.SetTrigger("Attack02");
-        } else if(CombatData.normalAttackCounter == 3) {
-            Animator.SetTrigger("Attack04");
-            CombatData.normalAttackCounter = 0;
-        }
+        isNormalAttacking = true;
 
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(normalAttackPoint.position, CombatData.normalAttackRange, enemyLayers);
 
@@ -111,7 +111,7 @@ public class PlayerCombat : MonoBehaviour
             ManaBar.AbsorbMana(CombatData.normalAttackCost);
         }
 
-        StartCoroutine(ResetAttackState(0.6f));
+        StartCoroutine(ResetAttackState(0.5f));
     }
 
     void StrongAttack() 
@@ -120,9 +120,7 @@ public class PlayerCombat : MonoBehaviour
 
         ManaBar.ConsumeMana(CombatData.strongAttackCost);
 
-        isAttacking = true;
-
-        Animator.SetTrigger("StrongAttack");
+        isStrongAttacking = true;
 
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(strongAttackPoint.position, CombatData.strongAttackRange, enemyLayers);
 
@@ -131,18 +129,16 @@ public class PlayerCombat : MonoBehaviour
             Debug.Log("We hit" + enemy.name);
         }
 
-        StartCoroutine(ResetAttackState(0.6f));
+        StartCoroutine(ResetAttackState(Animator.GetCurrentAnimatorStateInfo(0).length));
     }
 
     void GroundSlam() 
     {
         lastAttackTime = Time.time;
 
-        isAttacking = true;
+        isGroundSlamAttacking = true;
 
         ManaBar.ConsumeMana(CombatData.groundSlamCost);
-
-        Animator.SetTrigger("GroundSlam");
 
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(groundSlamPoint.position, CombatData.groundSlamRange, enemyLayers);
 
@@ -151,7 +147,7 @@ public class PlayerCombat : MonoBehaviour
             Debug.Log("We hit" + enemy.name);
         }
 
-        StartCoroutine(ResetAttackState(0.8f));
+        StartCoroutine(ResetAttackState(Animator.GetCurrentAnimatorStateInfo(0).length));
     }
 
     void RangeAttack() 
@@ -160,9 +156,7 @@ public class PlayerCombat : MonoBehaviour
 
         ManaBar.ConsumeMana(CombatData.rangeAttackCost);
 
-        isAttacking = true;
-
-        Animator.SetTrigger("RangeAttack");
+        isRangeAttacking = true;
 
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(rangeAttackPoint.position, CombatData.rangeAttackRange, enemyLayers);
 
@@ -171,7 +165,7 @@ public class PlayerCombat : MonoBehaviour
             Debug.Log("We hit" + enemy.name);
         }
 
-        StartCoroutine(ResetAttackState(0.8f)); 
+        StartCoroutine(ResetAttackState(Animator.GetCurrentAnimatorStateInfo(0).length)); 
     }
 
     private IEnumerator ResetAttackState(float delay)
@@ -179,7 +173,10 @@ public class PlayerCombat : MonoBehaviour
         // Start a coroutine to reset isAttacking when the animation finishes
         Camera.CameraShake();
         yield return new WaitForSeconds(delay);
-        isAttacking = false;
+        isNormalAttacking = false;
+        isStrongAttacking = false;
+        isGroundSlamAttacking = false;
+        isRangeAttacking = false;
     }
 
     void OnDrawGizmosSelected() 
